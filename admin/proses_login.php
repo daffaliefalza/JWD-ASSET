@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($admin && password_verify($password, $admin['password'])) {
         // Login sukses
-        $_SESSION['admin_id'] = $admin['id'];
+        $_SESSION['admin_id'] = $admin['id_admin'];
         $_SESSION['username'] = $admin['username'];
         header("Location: index.php");
     } else {
