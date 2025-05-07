@@ -104,23 +104,23 @@ if (isset($_POST['submit'])) {
 
         <?php
         $no = 1;
-        $query = "SELECT * FROM produk";
-        $result = mysqli_query($conn, $query);
+        $query_produk = "SELECT * FROM produk";
+        $result_produk = mysqli_query($conn, $query_produk);
 
-        if (mysqli_num_rows($result) > 0) :
-            while ($row = mysqli_fetch_assoc($result)) :
+        if (mysqli_num_rows($result_produk) > 0) :
+            while ($row_produk = mysqli_fetch_assoc($result_produk)) :
         ?>
                 <tr>
                     <td><?php echo $no++; ?></td>
-                    <td><?php echo $row['nama_produk']; ?></td>
-                    <td><?php echo $row['kategori_produk']; ?></td>
-                    <td><img src="uploads/<?php echo $row['gambar']; ?>" width="50"></td>
-                    <td><?php echo $row['harga']; ?></td>
-                    <td><?php echo $row['deskripsi']; ?></td>
-                    <td><?php echo $row['stok']; ?></td>
+                    <td><?php echo $row_produk['nama_produk']; ?></td>
+                    <td><?php echo $row_produk['kategori_produk']; ?></td>
+                    <td><img src="uploads/<?php echo $row_produk['gambar']; ?>" width="50"></td>
+                    <td><?php echo $row_produk['harga']; ?></td>
+                    <td><?php echo $row_produk['deskripsi']; ?></td>
+                    <td><?php echo $row_produk['stok']; ?></td>
                     <td>
-                        <a href="edit_produk.php?id=<?php echo $row['id_produk']; ?>">Edit</a> |
-                        <a href="hapus_produk.php?id=<?php echo $row['id_produk']; ?>" onclick="return confirm('Yakin ingin hapus produk ini?');">Delete</a>
+                        <a href="edit_produk.php?id=<?php echo $row_produk['id_produk']; ?>">Edit</a> |
+                        <a href="hapus_produk.php?id=<?php echo $row_produk['id_produk']; ?>" onclick="return confirm('Yakin ingin hapus produk ini?');">Delete</a>
                     </td>
                 </tr>
         <?php
@@ -129,6 +129,92 @@ if (isset($_POST['submit'])) {
             echo "<tr><td colspan='8'>Tidak ada data produk.</td></tr>";
         endif;
         ?>
+    </table>
+
+
+    <h2>Data User</h2>
+
+    <table border="1" cellpadding="10" cellspacing="0">
+        <tr>
+            <th>No</th>
+            <th>username</th>
+            <th>nama lengkap</th>
+            <th>no telp</th>
+            <th>alamat</th>
+            <th>dibuat pada</th>
+        </tr>
+
+        <?php
+        $no = 1;
+        $query_user = "SELECT * FROM user";
+        $result_user = mysqli_query($conn, $query_user);
+
+        if (mysqli_num_rows($result_user) > 0) :
+            while ($row_user = mysqli_fetch_assoc($result_user)) :
+        ?>
+                <tr>
+                    <td><?php echo $no++; ?></td>
+                    <td><?php echo $row_user['username']; ?></td>
+                    <td><?php echo $row_user['nama_lengkap']; ?></td>
+                    <td><?php echo $row_user['no_telepon']; ?></td>
+                    <td><?php echo $row_user['alamat']; ?></td>
+                    <td><?php echo $row_user['created_at']; ?></td>
+
+                </tr>
+        <?php
+            endwhile;
+        else :
+            echo "<tr><td colspan='8'>Tidak ada data produk.</td></tr>";
+        endif;
+        ?>
+    </table>
+
+    <h2>Data Pesanan</h2>
+    <table border="1" cellpadding="10" cellspacing="0">
+        <tr>
+            <th>ID Pesanan</th>
+            <th>Pelanggan</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Tanggal</th>
+            <th>Aksi</th>
+        </tr>
+        <?php
+        $query_pesanan = "SELECT pesanan.*, user.username 
+                      FROM pesanan 
+                      JOIN user ON pesanan.id_user = user.id_user
+                      ORDER BY pesanan.created_at DESC";
+        $result_pesanan = mysqli_query($conn, $query_pesanan);
+
+        if (mysqli_num_rows($result_pesanan) > 0) :
+            while ($row = mysqli_fetch_assoc($result_pesanan)) :
+        ?>
+                <tr>
+                    <td><?= $row['id_pesanan'] ?></td>
+                    <td><?= $row['username'] ?></td>
+                    <td>Rp <?= number_format($row['total'], 0, ',', '.') ?></td>
+                    <td>
+                        <form action="update_status.php" method="POST" style="display:inline;">
+                            <input type="hidden" name="id_pesanan" value="<?= $row['id_pesanan'] ?>">
+                            <select name="status" onchange="this.form.submit()">
+                                <option value="pending" <?= ($row['status'] == 'pending') ? 'selected' : '' ?>>pending</option>
+                                <option value="diproses" <?= ($row['status'] == 'diproses') ? 'selected' : '' ?>>Diproses</option>
+                                <option value="dikirim" <?= ($row['status'] == 'dikirim') ? 'selected' : '' ?>>Dikirim</option>
+                                <option value="selesai" <?= ($row['status'] == 'selesai') ? 'selected' : '' ?>>Selesai</option>
+                            </select>
+                        </form>
+                    </td>
+                    <td><?= date('d/m/Y', strtotime($row['created_at'])) ?></td>
+                    <td>
+                        <a href="detail_pesanan.php?id=<?= $row['id_pesanan'] ?>">Detail</a>
+                    </td>
+                </tr>
+            <?php endwhile; ?>
+        <?php else : ?>
+            <tr>
+                <td colspan="6">Tidak ada pesanan.</td>
+            </tr>
+        <?php endif; ?>
     </table>
 
 
