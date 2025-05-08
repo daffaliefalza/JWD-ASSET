@@ -94,12 +94,8 @@ CREATE TABLE `produk` (
   `stok` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `produk`
---
 
-INSERT INTO `produk` (`id_produk`, `nama_produk`, `kategori_produk`, `gambar`, `harga`, `deskripsi`, `stok`) VALUES
-(10, 'Bawang Putih Bubuk', 'Aksesoris', '24-06-2023.png', 15000, 'dddddd', 2);
+
 
 -- --------------------------------------------------------
 
